@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<head>
+		<title></title>
+		<style type="text/css">
+		body{
+			font-family: system-ui;
+			background: #2e2f31;
+			color: #fff;
+		}
+		*{
+			transition: all 0.5ms ease-in-out;
+		}
+			.center-to-do{
+				display: flex;
+				vertical-align: middle;
+				align-items: center;
+				height: 96vh;
+			}
+			.container{
+				margin: 0 auto;
+				vertical-align: middle;
+			}
+			.heading-1{
+				width: 100%;
+				margin: 1rem 0rem;
+				font-size: 1.4em;
+				font-weight: 600;
+				text-align: center;
+				text-transform: uppercase;
+			}
+			#todolist div{
+				padding: 0.5rem;
+				width: calc(100%-1rem);
+				display: block;
+				margin: 0.1rem 0;
+
+			}
+			input{
+				padding: 0.2rem 0.1rem;
+			}
+			input,button{
+				border: 1px solid #353535;
+				border-radius: 0.212rem;
+			}
+			button{
+				padding: 0.1rem 0.4rem;
+				cursor: pointer;
+				background: #fff;
+
+
+			}
+			#todolist div button{
+				padding: 0rem 0.4rem;
+				float: right;
+				background-color:  #1e1e23;
+				color: #fff;
+				border-color: #1e1e23;
+			}
+			.deleteall{
+				display: block;
+				padding: 0.2rem 0.4rem;
+				margin: 0.5rem auto;
+			}
+		</style>
+	</head>
+	<body>
+		<section class="center-to-do">
+			<div class="container" style="display: table;">
+				<div class="heading-1">To-Do List</div>
+				<input id="inp" value=" ">
+				<button onclick="addnew()">+</button>
+				
+				<div id="todolist"></div>
+				<button onclick="deleteall()" class="deleteall">Delete All</button>
+
+			</div>
+		</section>
+
+
+
+
+
+		<script type="text/javascript">
+			//list view function------------------------------------------------------------
+			function setlist(){
+				var storedNames = JSON.parse(localStorage.getItem("strings"));
+			  	var toadd = "<div style='display: block;'>  ";
+				var newelement;
+				var color = "#f1f1f1";
+				var textcol = "#000";
+				document.getElementById("todolist").innerHTML = "";
+				var buttontemp = "<button onclick='deletethis()' id='";
+				var button;
+				for (var i = 0; i < storedNames.length; i++) {
+					if(i%2==0){
+						color = "#4f4f4f";
+						textcol = "#fff";
+
+					}
+					else{
+		  				color = "#f1f1f1";
+		  				textcol = "#000";
+		  			}
+			  		button = buttontemp + i + "'>-</button>";
+			  		newelement = "<div style='background:"+color +"; color:"+ textcol +"; '>  " + storedNames[i] + button + "  </div>";
+			  		document.getElementById("todolist").innerHTML += newelement;
+			  		newelement = "";
+
+				}
+			}
+
+			//delete all function-------------------------------------------------------------
+			function deleteall(){
+				if (typeof(Storage) !== "undefined") {
+					var strings = JSON.parse(localStorage.getItem("strings"));
+					localStorage.removeItem("strings");
+					
+					document.getElementById("todolist").innerHTML = "";
+				}
+			}
+
+			//add new to-do item--------------------------------------------------------------
+			function addnew(){ 
+				var val = document.getElementById("inp").value;
+				if (typeof(Storage) !== "undefined") {
+					if(JSON.parse(localStorage.getItem("strings"))){
+						var stringslocal = JSON.parse(localStorage.getItem("strings"));
+					}
+					else{
+						localStorage.setItem("strings", JSON.stringify(strings));
+						var stringslocal = JSON.parse(localStorage.getItem("strings"));
+					}
+		 		 	
+		 		 	stringslocal.push(val);
+		  			localStorage.setItem("strings", JSON.stringify(stringslocal));
+					
+					setlist();
+
+				} else {
+		  			document.getElementById("todolist").innerHTML = "Sorry, your browser does not support Web Storage...";
+				}
+
+			};
+
+			//delete one item-------------------------------------------------------------------
+			function deletethis(){
+				if (typeof(Storage) !== "undefined") {
+		 		 	var stringslocal = JSON.parse(localStorage.getItem("strings"));
+		 		 	stringslocal.splice(event.target.id,1);
+		  			localStorage.setItem("strings", JSON.stringify(stringslocal));
+		  			setlist();
+				}
+
+			}
+		</script>
+		<script>
+			// first initiation of the string--------------------------------------------------
+			var strings = [];
+			if (typeof(Storage) !== "undefined") {
+				if(JSON.parse(localStorage.getItem("strings"))){
+					var storedNames = JSON.parse(localStorage.getItem("strings"));
+				}
+				else{
+					localStorage.setItem("strings", JSON.stringify(strings));
+					var storedNames = JSON.parse(localStorage.getItem("strings"));
+				}
+				setlist();
+			  	
+			  
+			} else {
+			  document.getElementById("todolist").innerHTML = "Sorry, your browser does not support Web Storage...";
+			}
+		</script>
+
+	</body>
+</html>
